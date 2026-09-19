@@ -139,7 +139,7 @@
                     </div>
                     <div class="grid grid-cols-3 gap-3">
                         ${data.latestEpisodes.slice(0, 6).map(ep => `
-                            <div class="group bg-[#121826] border border-slate-800/80 rounded-xl overflow-hidden shadow-md hover:border-amber-500/50 transition cursor-pointer flex flex-col" onclick="loadWatch('${ep.url}')">
+                            <div class="group bg-[#121826] border border-slate-800/80 rounded-xl overflow-hidden shadow-md hover:border-amber-500/50 transition cursor-pointer flex flex-col" onclick="loadDetail('${ep.url}')">
                                 <div class="relative aspect-video bg-slate-950 overflow-hidden">
                                     <img src="${ep.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     <div class="absolute bottom-1 left-1 bg-slate-950/80 text-amber-400 text-[9px] font-extrabold px-1.5 py-0.5 rounded backdrop-blur-sm">
@@ -154,7 +154,7 @@
                     </div>
                 </section>
 
-                <!-- New Update Anime Grid (Trending List) -->
+                <!-- New Update Anime Grid -->
                 <section class="mb-8">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-extrabold text-sm text-slate-100 flex items-center gap-2">
@@ -222,7 +222,13 @@
         async function loadDetail(url) {
             setLoading(true);
             try {
-                const encodedUrl = encodeURIComponent(url);
+                // Otomatis bersihkan URL episode agar aman di-scrape oleh backend detail
+                let cleanUrl = url;
+                if (cleanUrl.includes('/episode/')) {
+                    cleanUrl = cleanUrl.split('/episode/')[0];
+                }
+
+                const encodedUrl = encodeURIComponent(cleanUrl);
                 const res = await fetch(`/api/detail?url=${encodedUrl}`);
                 const json = await res.json();
                 
